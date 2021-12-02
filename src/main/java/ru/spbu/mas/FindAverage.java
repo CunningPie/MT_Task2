@@ -115,7 +115,7 @@ public class FindAverage extends CyclicBehaviour {
                 System.out.println("Agent #" + this.agent.getLocalName() + " finished work.");
 
                 ACLMessage dataMessage = new ACLMessage(ACLMessage.INFORM);
-                String newContent = "Finish process";
+                String newContent = msg.getContent();
                 dataMessage.setContent(newContent);
 
                 for (int j = 0; j < agent.linkedAgents.size(); j++)
