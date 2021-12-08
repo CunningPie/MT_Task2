@@ -5,5 +5,6 @@ public class App {
     {
         MainController mc = new MainController();
         mc.initAgents();
+
     }
 }

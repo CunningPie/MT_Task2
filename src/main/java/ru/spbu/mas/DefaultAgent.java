@@ -2,46 +2,52 @@ package ru.spbu.mas;
 
 import jade.core.Agent;
 
-import java.util.ArrayList;
-
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class DefaultAgent extends Agent {
-    public List<String> linkedAgents = new ArrayList<>();
-    public int[] numbers;
+    public HashMap<String, Double> linkedAgentsState = new HashMap<>();
+    public ArrayList<String> linkedAgents = new ArrayList<>();
+    public double number;
+    public double alpha;
 
-    /*
-    public boolean checkLeaf()
+    public boolean localVoting()
     {
-        int num = Integer.parseInt(this.getLocalName());
-        int neighbors = 0;
+        double sum = 0;
 
-        for (int i = 0; i < adjMatrix.length; i++)
-            if (adjMatrix[num][i] == true)
-                neighbors++;
+        for (Map.Entry<String, Double> entry : linkedAgentsState.entrySet())
+            sum += (entry.getValue() - this.number);
 
-        if (neighbors > 1)
-            return false;
+        linkedAgentsState.clear();
 
-        return true;
-    }*/
+        this.number = number + alpha * sum;
+
+        if (alpha * sum < 0.0001)
+            return true;
+
+        return false;
+    }
 
 
     @Override
     protected void setup(){
         int id = Integer.parseInt(getAID().getLocalName());
-        int N = (int)this.getArguments()[0];
-        numbers = new int[N];
+        alpha = 1.0 / (int)this.getArguments()[0];
 
-        linkedAgents = (List<String>) this.getArguments()[2];
+        number = (double) this.getArguments()[1];
 
-        for (int j = 0; j < N; j++)
-            numbers[j] = -1;
+        linkedAgents = (ArrayList<String>) this.getArguments()[2];
 
-        numbers[id] = (int)this.getArguments()[1];
+        System.out.println("Agent #" + id + " setuped. Value: " + number + ". Linked with agents: " + String.join(" ", linkedAgents));
+
+        try{
+            TimeUnit.SECONDS.sleep(5);                 //1000 milliseconds is one second.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+
 
         addBehaviour(new FindAverage(this ));
-        System.out.println("Agent #" + id + " setuped. Value: " + (int)this.getArguments()[1] + ". Linked with agents: " + String.join(" ", linkedAgents));
     }
     @Override
     protected void takeDown() {

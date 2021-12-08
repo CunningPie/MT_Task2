@@ -14,7 +14,7 @@ public class MainController {
     private final ArrayList<String>[] adjMatrix = new ArrayList[numberOfAgents];
 
     private int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
+        return ((int)(Math.random() * (max - min)) + min);
     }
 
     private void initAdjMatrix(int matrCase)
@@ -161,9 +161,9 @@ public class MainController {
         p.setParameter(Profile.GUI, "true");
         ContainerController cc = rt.createMainContainer(p);
 
-        initAdjMatrix(2);
+        initAdjMatrix(0);
 
-        int average = 0;
+        double average = 0;
 
         try
         {
@@ -171,15 +171,18 @@ public class MainController {
                 Object[] args = new Object[3];
 
                 args[0] = MainController.numberOfAgents;
-                args[1] = getRandomNumber(0, 10);
+                args[1] = (double) getRandomNumber(0, 10);
                 args[2] = adjMatrix[i];
 
-                average += (int)args[1];
+                average += (double)args[1];
                 AgentController agent = cc.createNewAgent(Integer.toString(i), "ru.spbu.mas.DefaultAgent", args);
                 System.out.println("Agent " + i + " with value: " + args[1] + " is created.");
-                agent.start();
             }
-            System.out.println("Agents created. Average value: " + (double)average / MainController.numberOfAgents);
+
+            for (int i = 0; i < MainController.numberOfAgents; i++)
+                cc.getAgent(String.valueOf(i)).start();
+
+            System.out.println("Agents created. Average value: " + average / MainController.numberOfAgents);
 
 
         }
